@@ -11,8 +11,7 @@ volumes:
     driver: local
 
 services:
-
-  # PHP Service
+  # PHP and Apache Services - 7.4
   php:
     build: './.docker/phpApache/'
     container_name: phpApache
@@ -24,11 +23,14 @@ services:
       - ./.docker/phpApache/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     ports:
       - "80:80"
+       # Port for xdebug (ensure this matches the remote_port in the xdebug.ini)
+      - "9000:9000"
     stdin_open: true
     tty: true
     networks:
       - laravel
-
+  
+  # MYSQL Service - 5.7.29
   mysql:
     image: mysql:5.7.29
     container_name: mysql
@@ -49,6 +51,7 @@ services:
     networks:
       - laravel
   
+  # NPM Service
   npm:
     image: node:16-alpine3.15
     container_name: npm
