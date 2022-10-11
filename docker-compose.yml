@@ -1,0 +1,58 @@
+version: '3.8'
+
+#Docker Networks
+networks:
+  laravel:
+    driver: bridge
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local
+
+services:
+
+  # PHP Service
+  php:
+    build: './.docker/phpApache/'
+    container_name: phpApache
+    depends_on:
+      - mysql
+    volumes:
+      - ./src:/var/www/html/
+      - ./.docker/phpApache/vhost/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./.docker/phpApache/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+    ports:
+      - "80:80"
+    stdin_open: true
+    tty: true
+    networks:
+      - laravel
+
+  mysql:
+    image: mysql:5.7.29
+    container_name: mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME} 
+      MYSQL_PASSWORD: ${DB_PASSWORD} 
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./.docker/mysql/my.cnf:/etc/mysql/my.cnf
+      - dbdata:/var/lib/mysql/
+    networks:
+      - laravel
+  
+  npm:
+    image: node:16-alpine3.15
+    container_name: npm
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ['npm']
