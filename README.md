@@ -22,7 +22,7 @@ To get started, make sure you have [Docker installed](https://docs.docker.com/) 
 1. Clone this project:
 
    ```sh
-   git clone https://github.com/supermavster/docker-laravel-8.git
+   git clone https://github.com/rafaeljurkfitz/docker-php-apache-mysql.git
    ```
 
 2. Inside the folder `docker-php-apache-mysql` and Generate your own `.env` to docker compose with the next command:
@@ -72,5 +72,3 @@ The only change is the `DB_HOST` in the `src/.env` where is called to the contai
 # source/.env
 DB_HOST=mysql
 ```
-
----
